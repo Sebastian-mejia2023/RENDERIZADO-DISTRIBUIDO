@@ -118,11 +118,19 @@ fractal-master-worker/
 │   └── src/main/java/co/icesi/fractal/worker/
 │       ├── WorkerMain.java                # Bucle de extracción (pollTask) y ThreadPool
 │       └── WorkerObserverI.java           # Servant callback: recepción de notifyTasksAvailable
-└── client/                                # Nodo Cliente y Banco de Pruebas
-    ├── build.gradle
-    └── src/main/java/co/icesi/fractal/client/
-        ├── ClientMain.java                # Benchmark único con validación de píxeles y Speedup
-        └── ExperimentRunner.java          # Ejecutor automatizado de la matriz experimental
+├── client/                                # Nodo Cliente y Banco de Pruebas
+│   ├── build.gradle
+│   └── src/main/java/co/icesi/fractal/client/
+│       ├── ClientMain.java                # Benchmark único con validación de píxeles y Speedup
+│       └── ExperimentRunner.java          # Ejecutor automatizado de la matriz experimental
+├── scripts/
+│   ├── generate_report_assets.py          # Consolida CSV y figuras del informe
+│   └── run_challenging_suite.py           # Orquesta las 5 configuraciones retadoras
+└── results/                               # Logs, CSV, matrices de referencia y PNG
+    ├── data/                              # Tablas consolidadas (incluye exp4_retadoras.csv)
+    ├── img/                               # Figuras e imágenes generadas
+    ├── logs/                              # Logs crudos del Maestro, workers y cliente
+    └── raw/                               # Matrices binarias de referencia del monolito
 ```
 
 ---
@@ -172,3 +180,26 @@ Con el Maestro y los Workers corriendo, ejecute el generador de la tabla compara
 ```
 
 El script imprimirá automáticamente una tabla en formato Markdown con las métricas de **$T_{\text{sec}}$, $T_{\text{dist}}$, $S$ y $E$** para cada combinación arquitectónica.
+
+### 5. Ejecutar la Suite de 5 Configuraciones Retadoras
+
+La suite levanta y apaga el Maestro y los workers para cada configuración, reutiliza las matrices de referencia del monolito y valida la imagen completa:
+
+```bash
+python3 scripts/run_challenging_suite.py
+
+# Repetir solo una configuración
+python3 scripts/run_challenging_suite.py --only r4_4w8h
+```
+
+La **latencia** reportada es el tiempo de pared extremo a extremo del job ($T_{\text{dist}}$). Las cinco configuraciones se eligieron para cubrir latencias entre 1 y 10 minutos:
+
+| ID | Configuración | Workers × hilos | Tile | Latencia | Speedup | Validación |
+| :--- | :--- | :---: | :---: | ---: | ---: | :---: |
+| R1 | Grano ultrafino con 4 workers | 4 × 4 | 24 × 24 | 2,19 min | 3,08× | OK |
+| R2 | Grano ultragrueso con un solo hilo | 1 × 1 | 512 × 512 | 7,42 min | 0,91× | OK |
+| R3 | Sobredimensionamiento de 128 hilos | 1 × 128 | 32 × 32 | 1,99 min | 3,39× | OK |
+| R4 | Cuatro workers con 8 hilos cada uno | 4 × 8 | 64 × 64 | 1,71 min | 3,95× | OK |
+| R5 | Vista macro con grano ultrafino | 4 × 4 | 16 × 16 | 1,00 min | 1,66× | OK |
+
+Los resultados completos, la figura y el análisis están en el [`INFORME.md`](INFORME.md) (§3.6). Los datos crudos se guardan en `results/data/exp4_retadoras.csv` y `results/logs/challenge_*`.

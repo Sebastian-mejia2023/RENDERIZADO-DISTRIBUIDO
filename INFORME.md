@@ -13,11 +13,12 @@
 
 ## Resumen ejecutivo
 
-Se implementó y ejecutó un clúster Master-Worker sobre ZeroC Ice para renderizar el conjunto de Mandelbrot en 4K UHD (3840 × 2160) con 5.000 iteraciones máximas por píxel. El clúster usa una bolsa de tareas concurrente, notificación asíncrona a los workers y consolidación incremental de resultados. La validación celda por celda contra el monolito fue **100 % exitosa** en las corridas de los Experimentos 2 y 3 y en la comparación `classic`; el harness del Experimento 1 mide tiempos, pero no ejecuta esa validación (limitación declarada en §2.4).
+Se implementó y ejecutó un clúster Master-Worker sobre ZeroC Ice para renderizar el conjunto de Mandelbrot en 4K UHD (3840 × 2160) con 5.000 iteraciones máximas por píxel. El clúster usa una bolsa de tareas concurrente, notificación asíncrona a los workers y consolidación incremental de resultados. La validación celda por celda contra el monolito fue **100 % exitosa** en las corridas de los Experimentos 2 y 3, en la comparación `classic` y en las 5 configuraciones retadoras de la suite complementaria; el harness del Experimento 1 mide tiempos, pero no ejecuta esa validación (limitación declarada en §2.4).
 
 Los resultados principales son:
 
-- El monolito tarda **404,5–421,3 s** en la región de estrés Seahorse Valley; el clúster reduce ese tiempo a **104,4 s** en la mejor configuración medida (un worker con 64 hilos, $S = 3{,}87$), cerca del límite de los 4 hilos lógicos de la máquina.
+- El monolito tarda **404,5–421,3 s** en la región de estrés Seahorse Valley; el clúster reduce ese tiempo a **104,4 s** en la mejor configuración del protocolo base (un worker con 64 hilos, $S = 3{,}87$), cerca del límite de los 4 hilos lógicos de la máquina.
+- La suite complementaria de **5 configuraciones retadoras** cubrió latencias extremo a extremo de **1,00 a 7,42 min**, todas dentro del rango de 1 a 10 min y todas validadas celda por celda. El mejor caso fue **R4** (4 workers × 8 hilos, tile 64 × 64) con **102,3 s** y $S=3{,}95$; el peor fue **R2** (1 worker × 1 hilo, tile 512 × 512) con **445,3 s** y $S=0{,}91$, más lento que el monolito por falta de concurrencia y sobrecosto de RPC.
 - La baldosa de **32 × 32** genera 8.160 tareas y es **12,7 % más lenta** que la de 64 × 64 (148,7 s vs. 132,0 s), evidencia del sobrecosto por mensaje y contención en el Maestro.
 - La partición estática `FixedCount` con $N=2$ usa solo 2 de los 8 hilos de cómputo del clúster y obtiene $S=1{,}77$; con $N=16$ llena el pool y alcanza $S=3{,}41$. La bolsa dinámica de tareas de 64 × 64 mantiene los 8 hilos ocupados y balancea el trabajo entre workers (sumas de cómputo de 520,9 s y 521,0 s por worker).
 - El pool de **64 hilos no degradó** el tiempo de pared: lo mejoró a 104,4 s, pero infló la latencia media por tarea **19,4 veces** (de 164 ms a 3.182 ms). El fenómeno se explica por ocultamiento de la latencia síncrona de RPC y por el uso completo de los 4 hilos lógicos, no por paralelismo real adicional.
@@ -37,7 +38,8 @@ El objetivo del taller es diseñar, ejecutar y analizar un sistema de procesamie
 3. Notificar asíncronamente a los workers y consolidar resultados en streaming.
 4. Validar la imagen distribuida contra el monolito.
 5. Medir y documentar los tres experimentos del protocolo: granularidad, tamaño del ThreadPool y escalabilidad del clúster.
-6. Responder el cuestionario conceptual y declarar el uso ético de IAG.
+6. Ejecutar una suite complementaria de 5 configuraciones retadoras con latencia de job entre 1 y 10 minutos.
+7. Responder el cuestionario conceptual y declarar el uso ético de IAG.
 
 El alcance de este informe incluye la ejecución real de los experimentos, las tablas de resultados, las gráficas de speedup, el análisis técnico y la evidencia cruda en `results/`.
 
@@ -113,8 +115,11 @@ Los puntos de código relevantes son:
 | 2. ThreadPool | 1 | 1, 2, 4, 8, 16, 64 | tile 64 × 64 | 1; 4 hilos se repitió 2 veces |
 | 3. Escalabilidad | 1, 2, 4 | 1 y 4 | tile 64 × 64 | p=2 con 1 hilo se repitió 2 veces |
 | Vista macro | 4 | 4 | tile 64 × 64 | 1 |
+| 4. Retadoras | 1, 4 | 1, 4, 8, 128 | tiles 16, 24, 32, 64 y 512 | 1 por configuración |
 
-Todas las corridas usaron 4K UHD, 5.000 iteraciones y la región Seahorse, salvo la comparación explícita con `classic`. Las matrices de referencia del monolito se guardaron en `results/raw/reference_*.bin` (con un sidecar `.tsec`) para reutilizar la validación sin repetir 7 minutos de línea base en cada corrida. A partir del Experimento 2, las corridas de los Experimentos 2 y 3 usaron esta caché; el Experimento 1 calculó su línea base con `ExperimentRunner` y `classic` calculó la suya con `ClientMain`. La optimización se implementó en `ClientMain` con los argumentos opcionales `--ref=<archivo>` y `--tsec=<ms>`; el comportamiento por defecto del cliente no cambió.
+Todas las corridas usaron 4K UHD, 5.000 iteraciones y la región Seahorse, salvo la comparación explícita con `classic` y la configuración R5 de la suite retadora. Las matrices de referencia del monolito se guardaron en `results/raw/reference_*.bin` (con un sidecar `.tsec`) para reutilizar la validación sin repetir 7 minutos de línea base en cada corrida. A partir del Experimento 2, las corridas de los Experimentos 2 y 3 usaron esta caché; el Experimento 1 calculó su línea base con `ExperimentRunner` y `classic` calculó la suya con `ClientMain`. La optimización se implementó en `ClientMain` con los argumentos opcionales `--ref=<archivo>` y `--tsec=<ms>`; el comportamiento por defecto del cliente no cambió.
+
+**Suite de configuraciones retadoras.** Las 5 corridas complementarias usaron las matrices de referencia en caché y se ejecutaron con `scripts/run_challenging_suite.py`. En esta suite, **latencia** se define como el tiempo de pared extremo a extremo del job ($T_{dist}$), no como un retardo artificial inyectado en la red. Las cinco corridas se diseñaron para que su latencia quedara entre 1 y 10 minutos; el rango observado fue 1,00–7,42 min y las cinco pasaron la validación celda por celda.
 
 **Limitación de validación del Experimento 1.** `ExperimentRunner` mide `T_dist` para las 8 configuraciones de granularidad, pero no conserva la matriz ni ejecuta la comparación celda por celda; por eso el Experimento 1 no produce un `[VERIFICACION OK]` propio. La ruta de renderizado es la misma que validan los Experimentos 2/3 y `classic`, pero el informe no atribuye validación explícita a esas 8 corridas.
 
@@ -139,6 +144,9 @@ Todas las corridas usaron 4K UHD, 5.000 iteraciones y la región Seahorse, salvo
 
 # Matriz automatizada del Experimento 1
 ./gradlew :client:runExperiment --args="localhost 10000 3840 2160 5000 seahorse"
+
+# Suite de 5 configuraciones retadoras (levanta y apaga el clúster por configuración)
+python3 scripts/run_challenging_suite.py
 ```
 
 La caché de referencia es opcional:
@@ -244,7 +252,7 @@ Nota: la línea ideal $S=p$ corresponde a la serie de 1 hilo/worker; la serie de
 
 1. **Con 1 hilo por worker, añadir workers ayuda pero de forma sublineal.** Pasar de 1 a 2 workers mejora 1,30×; de 1 a 4 workers, 1,97×. La máquina solo tiene 2 núcleos físicos / 4 hilos lógicos, y el Maestro, los dos o cuatro JVM de workers y el cliente compiten por ellos. El Maestro además consolida cada baldosa bajo un lock global y escribe una línea de log por tarea, lo que consume CPU y serializa parte del trabajo.
 2. **Con 4 hilos por worker, el primer worker ya satura los 4 hilos lógicos.** Añadir un segundo worker (8 hilos totales) no mejora el tiempo: 189,1 s vs. 191,3 s ($S_{rel}=1{,}01$). Añadir dos workers más (16 hilos totales) mejora a 125,9 s ($S_{rel}=1{,}52$), de nuevo por ocultamiento de latencia RPC, no por más capacidad aritmética. La eficiencia por hilo cae de 52,9 % a 20,1 %.
-3. **El clúster está limitado por el hardware, no por el número de nodos.** En una máquina de 2 núcleos físicos, 4 workers no pueden dar un speedup de 4×. El mejor resultado absoluto fue el worker único con 64 hilos ($S=3{,}87$), seguido de 4 workers × 4 hilos ($S=3{,}21$). En un clúster real con máquinas separadas, el Maestro no competiría por CPU con los workers y la escalabilidad sería mejor; esa es la principal limitación de esta medición.
+3. **El clúster está limitado por el hardware, no por el número de nodos.** En una máquina de 2 núcleos físicos, 4 workers no pueden dar un speedup de 4×. En el protocolo base, el mejor resultado absoluto fue el worker único con 64 hilos ($S=3{,}87$), seguido de 4 workers × 4 hilos ($S=3{,}21$). La suite retadora llevó el límite un poco más lejos con R4 (4 workers × 8 hilos, $S=3{,}95$), pero el techo sigue siendo la capacidad de los 4 hilos lógicos. En un clúster real con máquinas separadas, el Maestro no competiría por CPU con los workers y la escalabilidad sería mejor; esa es la principal limitación de esta medición.
 
 ### 3.4 Ley de Amdahl
 
@@ -297,6 +305,29 @@ Las estadísticas de `classic` corresponden a la vista 16:9 extendida (X hasta 2
 ![Comparación classic vs. seahorse](results/img/fig_classic_vs_seahorse.png)
 
 La vista `classic` es **4,05× más rápida** en el monolito y su media de iteraciones por píxel es **4,90× menor** que la de Seahorse. El 84,31 % de sus píxeles escapa en menos de 20 iteraciones, mientras que en Seahorse ningún píxel escapa tan rápido y el 64,95 % agota las 5.000 iteraciones. El speedup distribuido es parecido (~3×), pero el tiempo absoluto ahorrado es mucho mayor en Seahorse: ~279 s vs. ~67 s. Esa es la razón por la que la vista macro oculta la necesidad del clúster.
+
+### 3.6 Suite complementaria: 5 configuraciones retadoras y latencia de job
+
+Se añadieron cinco configuraciones diseñadas para llevar al clúster a extremos distintos: grano ultrafino, grano ultragrueso, sobredimensionamiento del pool, alta concurrencia entre workers y carga macro con grano fino. Todas usan 4K UHD y 5.000 iteraciones; las cuatro primeras usan Seahorse y R5 usa `classic`. La **latencia** reportada es el tiempo de pared extremo a extremo del job ($T_{dist}$), medido en el cliente. Las cinco corridas cargaron su matriz de referencia desde `results/raw/` y validaron la imagen completa contra el monolito.
+
+| ID | Configuración | Workers × hilos | Tile | Tareas | $T_{sec}$ (ms) | $T_{dist}$ (ms) | Latencia (min) | $S$ | $E$ ($p$ workers) | Validación |
+| :--- | :--- | :---: | :---: | ---: | ---: | ---: | ---: | ---: | ---: | :---: |
+| R1 | Grano ultrafino con 4 workers | 4 × 4 | 24 × 24 | 14.400 | 404.508 | 131.274 | 2,19 | 3,08× | 77,0 % | OK |
+| R2 | Grano ultragrueso con un solo hilo | 1 × 1 | 512 × 512 | 40 | 404.508 | 445.339 | 7,42 | 0,91× | 90,8 % | OK |
+| R3 | Sobredimensionamiento de 128 hilos | 1 × 128 | 32 × 32 | 8.160 | 404.508 | 119.253 | 1,99 | 3,39× | 339,2 % | OK |
+| R4 | Cuatro workers con 8 hilos cada uno | 4 × 8 | 64 × 64 | 2.040 | 404.508 | 102.307 | 1,71 | 3,95× | 98,8 % | OK |
+| R5 | Vista macro con grano ultrafino | 4 × 4 | 16 × 16 | 32.400 | 99.958 | 60.276 | 1,00 | 1,66× | 41,5 % | OK |
+
+![Latencia y speedup de las 5 configuraciones retadoras](results/img/fig_exp4_retadoras.png)
+
+**Lectura de los datos:**
+
+1. **R4 fue la mejor configuración absoluta de todo el estudio.** Con 4 workers × 8 hilos (32 hilos de cómputo sobre 4 hilos lógicos) y tile 64 × 64, terminó en **102,3 s** ($S=3{,}95$). Superó ligeramente al worker único de 64 hilos (104,4 s) y al de 4 workers × 4 hilos (125,9 s). La mejora no viene de más núcleos, sino de que 32 hilos ocultan mejor la latencia síncrona de `pollTask`/`reportResult`; la eficiencia por hilo real es baja ($E_{hilo}=12{,}3\%$), aunque la métrica $E$ con $p=4$ reporte 98,8 %.
+2. **R2 demostró que el clúster también puede perder.** Un solo worker con un solo hilo y baldosas de 512 × 512 genera apenas 40 tareas: no hay paralelismo, cada tarea tarda ~11 s y el RPC se paga igual. El resultado fue **445,3 s**, un **10,1 % más lento** que el monolito ($S=0{,}91$). Es el contraste limpio entre “tener un clúster” y “usar el clúster”: sin concurrencia suficiente, el overhead distribuido es puro costo.
+3. **R1 y R3 confirman que el grano fino es costoso, pero ocultable.** R1 (14.400 tareas de 24 × 24 con 16 hilos) terminó en 131,3 s ($S=3{,}08$); R3 (8.160 tareas de 32 × 32 con 128 hilos) en 119,3 s ($S=3{,}39$). El exceso de hilos compensa el costo por mensaje, pero R3 reporta una eficiencia aparente de 339,2 % porque $E=S/p$ usa $p=1$ worker; por hilo, la eficiencia real es solo 2,6 %.
+4. **R5 muestra la trampa macro con grano fino.** En `classic`, 32.400 tareas de 16 × 16 con 4 workers × 4 hilos tardaron 60,3 s ($S=1{,}66$). El cómputo por píxel es bajo y el costo dominante es el número de RPC; aun así, la latencia de 1,00 min cumple el rango objetivo. Es la combinación que más se aleja del “mejor caso” porque optimiza un problema que no representa la carga real del fractal.
+5. **Las cinco corridas quedaron dentro del rango de 1 a 10 minutos.** La latencia mínima fue **1,00 min** (R5) y la máxima **7,42 min** (R2). No se inyectó un retardo artificial de red: el rango se obtuvo de forma natural al elegir configuraciones con distinto grado de paralelismo y granularidad. Las cinco imágenes fueron **100 % idénticas** al monolito, celda por celda.
+6. **La variabilidad sigue presente.** Cada configuración se ejecutó una vez, con el Maestro, los workers y el cliente co-localizados. Diferencias de 4–15 % entre repeticiones, el calentamiento de JIT y la frecuencia turbo pueden mover las cifras; las conclusiones cualitativas (R4 mejor, R2 peor, grano fino costoso) son consistentes con los Experimentos 1–3.
 
 ---
 
@@ -432,13 +463,14 @@ Además de las matrices, el cliente y el Maestro mantienen copias para la serial
 
 ## 6. Conclusiones
 
-1. **El clúster funciona y es correcto en las corridas validadas.** Las corridas de los Experimentos 2/3 y `classic` produjeron una imagen 100 % idéntica al monolito, celda por celda; el Experimento 1 no ejecuta esa validación (limitación declarada en §2.4).
+1. **El clúster funciona y es correcto en las corridas validadas.** Las corridas de los Experimentos 2/3, `classic` y las 5 configuraciones retadoras produjeron una imagen 100 % idéntica al monolito, celda por celda; el Experimento 1 no ejecuta esa validación (limitación declarada en §2.4).
 2. **La granularidad es una decisión de ingeniería, no un detalle.** 32 × 32 genera 8.160 tareas y es 12,7 % más lenta que 64 × 64 por sobrecosto de RPC, serialización, logging y contención. 256 × 256 fue marginalmente más rápida en esta máquina, pero 64 × 64 es más robusta para pools grandes y cargas heterogéneas.
 3. **La partición estática es frágil.** Con N=2 solo se usan 2 de 8 hilos; con N=16 se llenan los 8 y el tiempo baja a 123,4 s. La bolsa dinámica de tareas mantiene los hilos ocupados y balancea la carga (sumas de cómputo casi idénticas entre workers) sin conocer la densidad de antemano.
 4. **El sobredimensionamiento del pool puede ocultar latencia, pero no crea núcleos.** 64 hilos mejoró el throughput a $S=3{,}87$ y mantuvo la máquina ocupada, a costa de una latencia por tarea 19,4× mayor y una eficiencia por hilo de 6,1 %. Es un trade-off, no una victoria gratuita.
 5. **La Ley de Amdahl es una aproximación.** La fracción serial efectiva es ~40 % (rango 34–54 %), dominada por consolidación, logging, RPC y co-localización. El mejor resultado de 64 hilos supera la asíntota del ajuste, lo que muestra que la fracción serial cambia con la configuración.
 6. **La vista macro engaña.** `classic` tarda 100 s y promedia 682,5 iteraciones/píxel; Seahorse tarda 404,5 s y promedia 3.347,8. El speedup distribuido es similar (~3×), pero el ahorro absoluto solo es relevante en la zona de estrés.
 7. **El hardware es el límite.** En una máquina de 2 núcleos físicos / 4 hilos lógicos, el clúster no puede escalar linealmente a 4 workers. Para evaluar la Ley de Amdahl de forma justa se necesitaría un clúster con Maestro y workers en máquinas separadas y, idealmente, más núcleos.
+8. **La suite retadora confirma el trade-off.** R4 (4 workers × 8 hilos, tile 64 × 64) logró la mejor latencia absoluta (102,3 s, $S=3{,}95$), mientras R2 (1 worker × 1 hilo, tile 512 × 512) fue más lenta que el monolito (445,3 s, $S=0{,}91$). Las cinco configuraciones quedaron entre 1,00 y 7,42 min y todas validaron correctamente: el clúster solo acelera cuando hay suficiente concurrencia y una granularidad razonable.
 
 ---
 
@@ -451,21 +483,27 @@ Además de las matrices, el cliente y el Maestro mantienen copias para la serial
 | `results/logs/exp2_*.log` | Corridas del Experimento 2 (1, 2, 4, 8, 16, 64 hilos) |
 | `results/logs/exp3_*.log`, `exp2_A_1hilo.log`, `exp2_C_4hilos*.log` | Corridas del Experimento 3 (p=1, 2, 4; 1 y 4 hilos/worker) |
 | `results/logs/classic_client.log` | Comparación de la vista `classic` |
+| `results/logs/challenge_*_master.log`, `challenge_*_w*.log`, `challenge_*_client.log` | Logs de Maestro, workers y cliente de las 5 configuraciones retadoras |
 | `results/data/exp1_granularidad.csv` | Datos tabulados del Experimento 1 |
 | `results/data/exp2_threadpool.csv` | Datos tabulados del Experimento 2 |
 | `results/data/exp3_escalabilidad.csv` | Datos tabulados del Experimento 3 |
+| `results/data/exp4_retadoras.csv`, `results/data/exp4_retadoras.md` | Tabla de las 5 configuraciones retadoras y su latencia de job |
 | `results/data/per_worker.csv` | Tareas y tiempos de cómputo por worker |
 | `results/data/matrix_stats.csv` | Estadísticas de las matrices `classic` y `seahorse` |
-| `results/img/fig_*.png` | Gráficas del informe |
-| `results/img/exp2_*.png`, `exp3_*.png`, `classic_distribuido.png` | Imágenes PNG generadas por el clúster |
+| `results/img/fig_*.png` | Gráficas del informe, incluida `fig_exp4_retadoras.png` |
+| `results/img/exp2_*.png`, `exp3_*.png`, `challenge_*.png`, `classic_distribuido.png` | Imágenes PNG generadas por el clúster |
 | `results/raw/reference_*.bin`, `results/raw/reference_*.bin.tsec` | Matrices de referencia del monolito y su $T_{sec}$ (grandes; regenerables) |
 | `scripts/generate_report_assets.py` | Script que consolida los datos y regenera CSV/figuras; métricas por worker y matrices desde logs/binarios |
+| `scripts/run_challenging_suite.py` | Orquestador de las 5 configuraciones retadoras; genera logs, PNG y la tabla `exp4_retadoras.csv` |
 
 ### 7.1 Comandos de verificación rápida
 
 ```bash
 # Regenerar las tablas CSV y las figuras a partir de los datos consolidados
 python3 scripts/generate_report_assets.py
+
+# Repetir la suite de 5 configuraciones retadoras
+python3 scripts/run_challenging_suite.py
 
 # Verificar la validación de una corrida
 grep -R "VERIFICACION OK" results/logs/

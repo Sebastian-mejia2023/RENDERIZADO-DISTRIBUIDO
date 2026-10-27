@@ -1,0 +1,6 @@
+id,configuracion,preset,width,height,max_iter,estrategia,parametro,tareas,workers,hilos_por_worker,hilos_totales,t_sec_ms,t_dist_ms,latencia_min,speedup,eficiencia_pct,validacion,latencia_1_10,log_cliente,png
+r1_ultrafino,R1 - Grano ultrafino con 4 workers,seahorse,3840,2160,5000,FixedTileSize,24,14400,4,4,16,404508,131274,2.19,3.08,77.0,OK,SI,results/logs/challenge_r1_ultrafino_client.log,results/img/challenge_r1_ultrafino.png
+r2_ultragrueso,R2 - Grano ultragrueso con un solo hilo,seahorse,3840,2160,5000,FixedTileSize,512,40,1,1,1,404508,445339,7.42,0.91,90.8,OK,SI,results/logs/challenge_r2_ultragrueso_client.log,results/img/challenge_r2_ultragrueso.png
+r3_pool128,R3 - Sobredimensionamiento de 128 hilos,seahorse,3840,2160,5000,FixedTileSize,32,8160,1,128,128,404508,119253,1.99,3.39,339.2,OK,SI,results/logs/challenge_r3_pool128_client.log,results/img/challenge_r3_pool128.png
+r4_4w8h,R4 - Cuatro workers con 8 hilos cada uno,seahorse,3840,2160,5000,FixedTileSize,64,2040,4,8,32,404508,102307,1.71,3.95,98.8,OK,SI,results/logs/challenge_r4_4w8h_client.log,results/img/challenge_r4_4w8h.png
+r5_classic_fino,R5 - Vista macro con grano ultrafino,classic,3840,2160,5000,FixedTileSize,16,32400,4,4,16,99958,60276,1.00,1.66,41.5,OK,SI,results/logs/challenge_r5_classic_fino_client.log,results/img/challenge_r5_classic_fino.png

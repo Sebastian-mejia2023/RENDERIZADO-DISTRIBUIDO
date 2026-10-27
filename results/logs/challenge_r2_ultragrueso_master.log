@@ -1,0 +1,56 @@
+=================================================
+        NODO MAESTRO (MASTER) INICIADO
+=================================================
+Escuchando en: tcp -h 0.0.0.0 -p 10000
+ThreadPool Server: 16 hilos base (max 64)
+Esperando conexion y registro de Workers...
+Presione Ctrl+C para finalizar.
+=================================================
+[MASTER] [+] Worker registrado: Worker-1 | Total activos: 1
+-------------------------------------------------
+[MASTER] Nueva solicitud de renderizado: job-d24056db
+[MASTER] Resolucion: 3840x2160 | MaxIter: 5000
+[MASTER] Estrategia de particion: FixedTileSizeStrategy (512x512 px)
+[MASTER] 40 tareas encoladas. Notificando a 1 worker(s) en espera...
+[MASTER] [OK] Tarea #000 entregada por Worker-1 (330 ms). Progreso: 1/40 (2,5%)
+[MASTER] [OK] Tarea #001 entregada por Worker-1 (1516 ms). Progreso: 2/40 (5,0%)
+[MASTER] [OK] Tarea #002 entregada por Worker-1 (12440 ms). Progreso: 3/40 (7,5%)
+[MASTER] [OK] Tarea #003 entregada por Worker-1 (20755 ms). Progreso: 4/40 (10,0%)
+[MASTER] [OK] Tarea #004 entregada por Worker-1 (19503 ms). Progreso: 5/40 (12,5%)
+[MASTER] [OK] Tarea #005 entregada por Worker-1 (20255 ms). Progreso: 6/40 (15,0%)
+[MASTER] [OK] Tarea #006 entregada por Worker-1 (21721 ms). Progreso: 7/40 (17,5%)
+[MASTER] [OK] Tarea #007 entregada por Worker-1 (9724 ms). Progreso: 8/40 (20,0%)
+[MASTER] [OK] Tarea #008 entregada por Worker-1 (423 ms). Progreso: 9/40 (22,5%)
+[MASTER] [OK] Tarea #009 entregada por Worker-1 (913 ms). Progreso: 10/40 (25,0%)
+[MASTER] [OK] Tarea #010 entregada por Worker-1 (9082 ms). Progreso: 11/40 (27,5%)
+[MASTER] [OK] Tarea #011 entregada por Worker-1 (21934 ms). Progreso: 12/40 (30,0%)
+[MASTER] [OK] Tarea #012 entregada por Worker-1 (24751 ms). Progreso: 13/40 (32,5%)
+[MASTER] [OK] Tarea #013 entregada por Worker-1 (22581 ms). Progreso: 14/40 (35,0%)
+[MASTER] [OK] Tarea #014 entregada por Worker-1 (24000 ms). Progreso: 15/40 (37,5%)
+[MASTER] [OK] Tarea #015 entregada por Worker-1 (10451 ms). Progreso: 16/40 (40,0%)
+[MASTER] [OK] Tarea #016 entregada por Worker-1 (265 ms). Progreso: 17/40 (42,5%)
+[MASTER] [OK] Tarea #017 entregada por Worker-1 (1733 ms). Progreso: 18/40 (45,0%)
+[MASTER] [OK] Tarea #018 entregada por Worker-1 (9554 ms). Progreso: 19/40 (47,5%)
+[MASTER] [OK] Tarea #019 entregada por Worker-1 (14041 ms). Progreso: 20/40 (50,0%)
+[MASTER] [OK] Tarea #020 entregada por Worker-1 (13777 ms). Progreso: 21/40 (52,5%)
+[MASTER] [OK] Tarea #021 entregada por Worker-1 (18915 ms). Progreso: 22/40 (55,0%)
+[MASTER] [OK] Tarea #022 entregada por Worker-1 (21072 ms). Progreso: 23/40 (57,5%)
+[MASTER] [OK] Tarea #023 entregada por Worker-1 (11404 ms). Progreso: 24/40 (60,0%)
+[MASTER] [OK] Tarea #024 entregada por Worker-1 (180 ms). Progreso: 25/40 (62,5%)
+[MASTER] [OK] Tarea #025 entregada por Worker-1 (351 ms). Progreso: 26/40 (65,0%)
+[MASTER] [OK] Tarea #026 entregada por Worker-1 (2470 ms). Progreso: 27/40 (67,5%)
+[MASTER] [OK] Tarea #027 entregada por Worker-1 (22010 ms). Progreso: 28/40 (70,0%)
+[MASTER] [OK] Tarea #028 entregada por Worker-1 (24410 ms). Progreso: 29/40 (72,5%)
+[MASTER] [OK] Tarea #029 entregada por Worker-1 (23492 ms). Progreso: 30/40 (75,0%)
+[MASTER] [OK] Tarea #030 entregada por Worker-1 (24542 ms). Progreso: 31/40 (77,5%)
+[MASTER] [OK] Tarea #031 entregada por Worker-1 (15043 ms). Progreso: 32/40 (80,0%)
+[MASTER] [OK] Tarea #032 entregada por Worker-1 (117 ms). Progreso: 33/40 (82,5%)
+[MASTER] [OK] Tarea #033 entregada por Worker-1 (264 ms). Progreso: 34/40 (85,0%)
+[MASTER] [OK] Tarea #034 entregada por Worker-1 (701 ms). Progreso: 35/40 (87,5%)
+[MASTER] [OK] Tarea #035 entregada por Worker-1 (3969 ms). Progreso: 36/40 (90,0%)
+[MASTER] [OK] Tarea #036 entregada por Worker-1 (4187 ms). Progreso: 37/40 (92,5%)
+[MASTER] [OK] Tarea #037 entregada por Worker-1 (4430 ms). Progreso: 38/40 (95,0%)
+[MASTER] [OK] Tarea #038 entregada por Worker-1 (4563 ms). Progreso: 39/40 (97,5%)
+[MASTER] [OK] Tarea #039 entregada por Worker-1 (1764 ms). Progreso: 40/40 (100,0%)
+[MASTER] Renderizado completado exitosamente en 444711 ms (40 tareas procesadas).
+[MASTER] [-] Worker retirado: Worker-1 | Total activos: 0

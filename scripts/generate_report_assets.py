@@ -345,6 +345,54 @@ def plot_classic() -> None:
     plt.close(fig)
 
 
+def plot_exp4() -> None:
+    path = DATA / "exp4_retadoras.csv"
+    if not path.exists():
+        return
+    with path.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    if not rows:
+        return
+
+    labels = [row["id"].split("_")[0].upper() for row in rows]
+    latency = [float(row["latencia_min"]) for row in rows]
+    speedup = [float(row["speedup"]) for row in rows]
+    configs = [row["configuracion"] for row in rows]
+
+    fig, (ax_l, ax_s) = plt.subplots(1, 2, figsize=(12, 4.6))
+    x = np.arange(len(rows))
+    colors = ["#1f77b4", "#d62728", "#2ca02c", "#ff7f0e", "#9467bd"]
+
+    bars = ax_l.bar(x, latency, color=colors, alpha=0.85)
+    ax_l.axhspan(1.0, 10.0, color="#2ca02c", alpha=0.08, label="Rango objetivo 1-10 min")
+    ax_l.set_xticks(x)
+    ax_l.set_xticklabels(labels)
+    ax_l.set_ylabel("Latencia extremo a extremo (min)")
+    ax_l.set_title("Latencia de job de las 5 configuraciones")
+    ax_l.set_ylim(0, 10.5)
+    ax_l.legend(fontsize=8, loc="upper right")
+    for bar, value, config in zip(bars, latency, configs):
+        ax_l.text(bar.get_x() + bar.get_width() / 2, value + 0.12, f"{value:.2f}",
+                  ha="center", fontsize=8)
+        ax_l.text(bar.get_x() + bar.get_width() / 2, 0.25, config.split(" - ")[1],
+                  ha="center", va="bottom", rotation=90, fontsize=6.5, color="white")
+
+    bars_s = ax_s.bar(x, speedup, color=colors, alpha=0.85)
+    ax_s.axhline(1.0, color="black", linewidth=0.8, linestyle="--")
+    ax_s.set_xticks(x)
+    ax_s.set_xticklabels(labels)
+    ax_s.set_ylabel("Speedup S = T_sec / T_dist")
+    ax_s.set_title("Speedup de las 5 configuraciones")
+    for bar, value in zip(bars_s, speedup):
+        ax_s.text(bar.get_x() + bar.get_width() / 2, value + 0.08, f"{value:.2f}x",
+                  ha="center", fontsize=8)
+    ax_s.set_ylim(0, max(4.5, max(speedup) + 0.6))
+
+    fig.tight_layout()
+    fig.savefig(IMG / "fig_exp4_retadoras.png", dpi=150)
+    plt.close(fig)
+
+
 def main() -> None:
     exp1_rows = []
     for n, row in EXP1_FIXED.items():
@@ -419,6 +467,7 @@ def main() -> None:
     plot_exp3()
     plot_amdahl()
     plot_classic()
+    plot_exp4()
     print("Artefactos generados en results/data y results/img")
 
 
