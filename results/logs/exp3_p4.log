@@ -1,0 +1,29 @@
+=================================================
+         CLIENTE DE BENCHMARK FRACTAL
+=================================================
+Conectado a Master:    MasterService:tcp -h localhost -p 10000
+Workers en el clúster: 4 nodo(s) activo(s)
+Preset / Región:       Valle de los Caballitos de Mar (Seahorse Valley) (seahorse)
+Dimensiones imagen:    3840x2160 (8294400 px)
+Plano Complejo:        X=[-0,750000, -0,732222], Y=[0,090000, 0,100000]
+Max. Iteraciones:      5000
+Estrategia elegida:    FixedTileSize (Baldosas) (Parametro = 64)
+
+[1/3] Cargando matriz de referencia desde /home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/results/raw/reference_seahorse_4k_5000.bin...
+[REFERENCIA] T_sec registrado: 404508 ms (404,51 s)
+[REFERENCIA] T_sec forzado por argumento: 404508 ms
+
+[2/3] Solicitando renderizado distribuido al clúster Master-Worker...
+
+[3/3] Validando integridad de los datos calculados...
+[VERIFICACION OK] El resultado distribuido es 100% idéntico al secuencial.
+
+=================================================
+              RESULTADOS DEL BENCHMARK
+=================================================
+Tiempo Monolito (T_sec):      404508 ms (404,51 s)
+Tiempo Clúster (T_dist):      173043 ms (173,04 s)
+Aceleración (Speedup S):      2,34x
+Eficiencia Paralela (E):      58,4%
+=================================================
+[MandelbrotCore] Imagen guardada satisfactoriamente en: /home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/results/img/exp3_p4.png

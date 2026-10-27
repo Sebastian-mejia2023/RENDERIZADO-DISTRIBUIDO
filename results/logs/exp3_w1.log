@@ -1,0 +1,15 @@
+=================================================
+        NODO TRABAJADOR (WORKER) ACTIVO
+=================================================
+Identificador:   Worker-1
+Puerto Local:    10001
+Maestro Conect.: MasterService:tcp -h localhost -p 10000
+Hilos de Computo:1 hilos en ThreadPool
+Estado actual:   EN ESPERA (STANDBY)
+Presione Ctrl+C para finalizar.
+=================================================
+[Worker-1] [EVENTO] Tareas disponibles para el trabajo 'job-4cc20c5c'. Despertando 1 hilos de computo...
+[Worker-1] [EVENTO] Tareas disponibles para el trabajo 'job-805f9657'. Despertando 1 hilos de computo...
+[Worker-1] [EVENTO] Tareas disponibles para el trabajo 'job-29f661f7'. Despertando 1 hilos de computo...
+
+[SHUTDOWN] Desregistrando worker del Master...

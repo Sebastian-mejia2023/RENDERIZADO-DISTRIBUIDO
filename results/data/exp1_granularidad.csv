@@ -1,0 +1,9 @@
+estrategia,parametro,tareas,t_sec_ms,t_dist_ms,speedup,eficiencia_pct
+FixedCount,2,2,421337,238567,1.77,88.3
+FixedCount,4,4,421337,154264,2.73,136.6
+FixedCount,8,8,421337,141394,2.98,149.0
+FixedCount,16,16,421337,123394,3.41,170.7
+FixedTileSize,32,8160,421337,148730,2.83,141.6
+FixedTileSize,64,2040,421337,131989,3.19,159.6
+FixedTileSize,128,510,421337,134318,3.14,156.8
+FixedTileSize,256,135,421337,123022,3.42,171.2

@@ -1,0 +1,28 @@
+=================================================
+         CLIENTE DE BENCHMARK FRACTAL
+=================================================
+Conectado a Master:    MasterService:tcp -h localhost -p 10000
+Workers en el clúster: 2 nodo(s) activo(s)
+Preset / Región:       Valle de los Caballitos de Mar (Seahorse Valley) (seahorse)
+Dimensiones imagen:    480x270 (129600 px)
+Plano Complejo:        X=[-0,750000, -0,732222], Y=[0,090000, 0,100000]
+Max. Iteraciones:      5000
+Estrategia elegida:    FixedTileSize (Baldosas) (Parametro = 64)
+
+[1/3] Ejecutando línea base monohilo local (T_sec)...
+[LINEA BASE] Tiempo Secuencial (T_sec): 6855 ms (6,86 s)
+
+[2/3] Solicitando renderizado distribuido al clúster Master-Worker...
+
+[3/3] Validando integridad de los datos calculados...
+[VERIFICACION OK] El resultado distribuido es 100% idéntico al secuencial.
+
+=================================================
+              RESULTADOS DEL BENCHMARK
+=================================================
+Tiempo Monolito (T_sec):      6855 ms (6,86 s)
+Tiempo Clúster (T_dist):      2621 ms (2,62 s)
+Aceleración (Speedup S):      2,62x
+Eficiencia Paralela (E):      130,8%
+=================================================
+[MandelbrotCore] Imagen guardada satisfactoriamente en: /tmp/opencode/cluster_test.png

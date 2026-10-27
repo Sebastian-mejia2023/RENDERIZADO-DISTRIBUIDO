@@ -1,0 +1,19 @@
+<state>
+  <timestamp value='1793070448536' />
+  <sourceSet name='default'>
+    <source name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/src/main/slice/FractalCompute.ice'>
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/RenderConfig.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/TaskTile.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/TileResult.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/FractalException.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/WorkerObserver.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/MasterService.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/IterationMatrixHelper.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/WorkerObserverPrx.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/_WorkerObserverPrxI.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/MasterServicePrx.java' />
+      <file name='/home/mejia/Documentos/SEMESTRE_05/COMPUNET1/posttragedia/FRACTALEEEES/taller-evaluativo-fractales-master-worker/common/build/generated-src/FractalApp/_MasterServicePrxI.java' />
+    </source>
+    <arg value='/home/mejia/.local/bin/slice2java' />
+  </sourceSet>
+</state>

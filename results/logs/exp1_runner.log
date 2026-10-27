@@ -1,0 +1,21 @@
+=================================================
+     INICIANDO MATRIZ DE EXPERIMENTACIÓN
+=================================================
+Region / Preset: Valle de los Caballitos de Mar (Seahorse Valley) (seahorse)
+Resolucion:      3840x2160 | MaxIter: 5000 | Workers: 2
+
+Calculando tiempo secuencial monohilo T_sec...
+T_sec = 421337 ms (421,34 s)
+
+| Estrategia | Parámetro | Tareas Generadas | T_sec (ms) | T_dist (ms) | Speedup (S) | Eficiencia (E) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| FixedCount (Franjas) | 2 | 2 | 421337 | 238567 | 1,77x | 88,3% |
+| FixedCount (Franjas) | 4 | 4 | 421337 | 154264 | 2,73x | 136,6% |
+| FixedCount (Franjas) | 8 | 8 | 421337 | 141394 | 2,98x | 149,0% |
+| FixedCount (Franjas) | 16 | 16 | 421337 | 123394 | 3,41x | 170,7% |
+| FixedTileSize (Baldosas) | 32 | 8160 | 421337 | 148730 | 2,83x | 141,6% |
+| FixedTileSize (Baldosas) | 64 | 2040 | 421337 | 131989 | 3,19x | 159,6% |
+| FixedTileSize (Baldosas) | 128 | 510 | 421337 | 134318 | 3,14x | 156,8% |
+| FixedTileSize (Baldosas) | 256 | 135 | 421337 | 123022 | 3,42x | 171,2% |
+
+[FIN] Matriz experimental finalizada.
