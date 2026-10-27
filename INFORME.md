@@ -7,7 +7,7 @@
 **Institución:** Universidad Icesi, Cali, Colombia  
 **Período:** 2026-2  
 **Integrantes:** Sebastián Mejía Trujillo - A00410557  
-**Repositorio:** https://github.com/Compu-1/taller-evaluativo-fractales-master-worker
+**Repositorio de proyecto base:** https://github.com/Compu-1/taller-evaluativo-fractales-master-worker
 
 ---
 
